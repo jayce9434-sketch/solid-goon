@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#090d14" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="STARJUNK" />
+  <title>STARJUNK</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main id="app">
+  <section id="menu" class="screen active">
+    <div class="menu-shell">
+      <div class="hero">
+        <div class="eyebrow">SALVAGE. ADAPT. OUTLAST.</div>
+        <div class="title" id="gameTitle"></div>
+        <div class="subtitle" id="tagline"></div>
+        <div id="eventChips" class="event-chips"></div>
+      </div>
+      <div class="profile-strip">
+        <div><span>LEVEL</span><b id="levelText">1</b></div>
+        <div class="xp-wrap"><div class="xp-bar"><i id="xpFill"></i></div><small id="xpText">0 / 100 XP</small></div>
+        <div><span>CREDITS</span><b id="creditsText">0</b></div>
+        <div><span>CRATES</span><b id="cratesText">0</b></div>
+      </div>
+      <div class="menu-grid">
+        <button class="primary big" id="playSolo"><span>Solo Run</span><small>Push your build as far as it can go.</small></button>
+        <button class="big" id="playBots"><span>Crew Run</span><small>Two AI wingmates with combat chatter.</small></button>
+        <button id="openPrivate"><span>Private Room</span><small>Custom code and bot crew.</small></button>
+        <button id="openHangar"><span>Hangar</span><small>Skins, permanent perks, collection.</small></button>
+        <button id="openCrates"><span>Crates</span><small>Open rewards earned from bosses and runs.</small></button>
+        <button id="openEvents"><span>Events</span><small>Halloween and Fall rewards.</small></button>
+        <button id="openStats"><span>Records</span><small>Best runs, kills, bosses, collection.</small></button>
+        <button id="openSettings"><span>Settings</span><small>Audio, visuals, accessibility.</small></button>
+        <button id="openHow"><span>How to Play</span><small>Controls and progression guide.</small></button>
+      </div>
+      <div class="daily-card" id="dailyCard"></div>
+      <div class="tiny" id="bestLine"></div>
+    </div>
+  </section>
+
+  <section id="privateScreen" class="screen"><div class="panel narrow">
+    <div class="screen-head"><div><div class="kicker">CUSTOM RUN</div><h2>Private Room</h2></div></div>
+    <p class="muted">Room codes with 5+ characters stay completely private and never add random crew.</p>
+    <label>Room code<input id="roomCode" maxlength="16" autocapitalize="characters" autocomplete="off" placeholder="ENTER CODE" /></label>
+    <label>Bot crew<select id="botCount"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></label>
+    <label>Starting threat<select id="startThreat"><option value="1">Standard</option><option value="3">Threat III</option><option value="5">Threat V</option></select></label>
+    <button class="primary" id="startPrivate">Start Room</button><button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="hangarScreen" class="screen"><div class="panel wide scroll-panel">
+    <div class="screen-head"><div><div class="kicker">COLLECTION</div><h2>Hangar</h2></div><div class="currency" id="hangarCredits"></div></div>
+    <div class="hangar-preview"><canvas id="previewCanvas" width="320" height="170"></canvas><div><span class="muted">Equipped</span><h3 id="equippedName">Factory Mint</h3><p id="equippedDesc"></p></div></div>
+    <h3>Skins</h3><div id="skinGrid" class="skin-grid"></div>
+    <h3>Permanent Systems</h3><div id="metaGrid" class="upgrade-grid meta-grid"></div>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="cratesScreen" class="screen"><div class="panel wide scroll-panel">
+    <div class="screen-head"><div><div class="kicker">SALVAGE CACHE</div><h2>Crates</h2></div><div class="currency" id="crateWallet"></div></div>
+    <div id="crateGrid" class="crate-grid"></div>
+    <div id="crateResult" class="crate-result hidden"></div>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="eventsScreen" class="screen"><div class="panel wide scroll-panel">
+    <div class="screen-head"><div><div class="kicker">LIMITED OPERATIONS</div><h2>Seasonal Events</h2></div></div>
+    <div id="eventList" class="event-list"></div>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="statsScreen" class="screen"><div class="panel wide scroll-panel">
+    <div class="screen-head"><div><div class="kicker">ARCHIVE</div><h2>Records</h2></div></div>
+    <div id="statsGrid" class="stats-grid"></div>
+    <h3>Run Milestones</h3><div id="milestoneList" class="milestone-list"></div>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="settingsScreen" class="screen"><div class="panel narrow scroll-panel">
+    <div class="screen-head"><div><div class="kicker">SYSTEM</div><h2>Settings</h2></div></div>
+    <label>Music Volume <span id="musicValue">100%</span><input id="musicVolume" type="range" min="0" max="2000" step="10" value="100" /></label>
+    <label>SFX Volume <span id="sfxValue">100%</span><input id="sfxVolume" type="range" min="0" max="2000" step="10" value="100" /></label>
+    <label>Screen Shake <span id="shakeValue">70%</span><input id="shakeAmount" type="range" min="0" max="100" step="5" value="70" /></label>
+    <label class="row"><span>Damage numbers</span><input id="damageNumbers" type="checkbox" checked /></label>
+    <label class="row"><span>High contrast HUD</span><input id="highContrast" type="checkbox" /></label>
+    <label class="row"><span>Reduced particles</span><input id="reducedParticles" type="checkbox" /></label>
+    <button id="resetSave" class="danger">Reset Save Data</button>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="howScreen" class="screen"><div class="panel wide scroll-panel">
+    <div class="screen-head"><div><div class="kicker">FIELD MANUAL</div><h2>How to Play</h2></div></div>
+    <div class="how-grid">
+      <div><b>Move</b><span>Left joystick, WASD, or arrow keys.</span></div>
+      <div><b>Aim</b><span>Drag the right half of the screen, use mouse aim, or let auto-aim acquire targets.</span></div>
+      <div><b>Fire</b><span>Hold FIRE or mouse. Your weapon keeps firing at your aim point.</span></div>
+      <div><b>Dash</b><span>DASH grants brief invulnerability. Later upgrades turn it into a weapon.</span></div>
+      <div><b>Build</b><span>Every cleared wave opens the workbench. Buy several upgrades if you can afford them.</span></div>
+      <div><b>Synergies</b><span>Upgrade tags interact. Critical, burn, drone, armor, dash and multishot builds can scale hard.</span></div>
+      <div><b>Bosses</b><span>Boss waves have unique attacks, phase changes and dedicated music.</span></div>
+      <div><b>Progression</b><span>Runs award credits, XP and crates. Spend credits on permanent systems and collect skins.</span></div>
+      <div><b>Events</b><span>Seasonal enemies drop event currency. Event bosses pay much more and unlock limited skins.</span></div>
+      <div><b>Crates</b><span>Earn them from bosses and run milestones. Crates contain credits, XP, boosts and skins.</span></div>
+    </div>
+    <button class="ghost backBtn">Back</button>
+  </div></section>
+
+  <section id="gameScreen" class="screen game-screen">
+    <canvas id="game"></canvas>
+    <div id="hud"><div class="hud-left">
+      <div class="chip"><span>HP</span><b id="hpText">100</b></div><div class="chip"><span>Wave</span><b id="waveText">1</b></div><div class="chip"><span>Scrap</span><b id="scrapText">0</b></div><div class="chip combo-chip"><span>Combo</span><b id="comboText">x1.0</b></div>
+    </div><div class="hud-right"><div class="threat-pill" id="threatPill">STANDARD</div><button id="pauseBtn" class="hud-btn">II</button></div></div>
+    <div id="bossBar" class="boss hidden"><span id="bossName"></span><small id="bossPhase"></small><div><i id="bossFill"></i></div></div>
+    <div id="modifierBanner" class="modifier hidden"></div>
+    <div id="message"></div><div id="crewChat"></div>
+    <div id="joystick" class="stick"><div class="knob"></div></div><div id="aimPad"></div>
+    <div id="actions"><button id="dashBtn"><span>DASH</span><small id="dashCdText">READY</small></button><button id="fireBtn" class="fire">FIRE</button></div>
+  </section>
+
+  <section id="upgradeScreen" class="overlay-screen hidden"><div class="upgrade-card">
+    <div class="upgrade-head"><div><div class="kicker">WORKBENCH</div><h2 id="upgradeTitle">Choose upgrades</h2><p id="upgradeSubtitle" class="muted"></p></div><div class="wallet">Scrap <b id="upgradeScrap">0</b></div></div>
+    <div id="buildTags" class="build-tags"></div><div id="upgradeOptions" class="upgrade-grid"></div>
+    <div class="bench-actions"><button id="rerollUpgrades">Reroll <span id="rerollCost"></span></button><button id="continueWave" class="primary">Continue</button></div>
+  </div></section>
+
+  <section id="pauseScreen" class="overlay-screen hidden"><div class="panel narrow">
+    <div class="kicker">RUN PAUSED</div><h2>Systems Frozen</h2><button class="primary" id="resumeBtn">Resume</button><button id="pauseSettings">Settings</button><button class="danger" id="quitBtn">Quit Run</button>
+  </div></section>
+
+  <section id="gameOverScreen" class="overlay-screen hidden"><div class="panel narrow center">
+    <div class="kicker">RUN ENDED</div><h2 id="gameOverTitle">System Failure</h2><p id="gameOverStats"></p><div id="rewardBreakdown" class="reward-box"></div>
+    <button class="primary" id="retryBtn">Run Again</button><button id="menuBtn">Main Menu</button>
+  </div></section>
+</main>
+<script src="game.js"></script>
+</body>
+</html>
